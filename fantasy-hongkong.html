@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幻境：港岛迷局 - 反诈教育游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #4ECDC4;
+            --danger-color: #FF6B6B;
+            --warning-color: #ffa940;
+            --success-color: #52c41a;
+            --text-dark: #1a1a1a;
+            --text-light: #666;
+            --bg-light: #f5f7fa;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(180deg, #f5f7fa 0%, #eef2f7 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 容器布局 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 页面管理 */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ========== 首页样式 ========== */
+        .home-page {
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #0066cc 0%, #4ECDC4 100%);
+            border-radius: 16px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* 用户信息卡片 */
+        .user-card {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0066cc, #4ECDC4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .user-info h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .user-info p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* 统计数据 */
+        .statistics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0066cc, #00a8ff);
+            transition: width 0.3s ease;
+        }
+
+        /* 通知 */
+        .notifications {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .notification-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--warning-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background: #fffbe6;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .notification-content {
+            color: var(--text-light);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* 菜单网格 */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+        }
+
+        .menu-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .menu-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .menu-subtitle {
+            font-size: 12px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .menu-description {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        .menu-card.story { border-left-color: #FF6B6B; }
+        .menu-card.werewolf { border-left-color: #4ECDC4; }
+        .menu-card.simulator { border-left-color: #45B7D1; }
+        .menu-card.map { border-left-color: #96CEB4; }
+
+        /* ========== 故事模式样式 ========== */
+        .story-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .story-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .story-title {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .story-difficulty {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #f0f5ff;
+            color: var(--primary-color);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* 场景显示 */
+        .scene {
+            margin-bottom: 30px;
+            min-height: 200px;
+        }
+
+        .scene-intro {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .scene-text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .scene-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        /* 对话场景 */
+        .character-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #f5f7fa;
+            border-radius: 8px;
+        }
+
+        .character-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0066cc, #4ECDC4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .character-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+
+        .message-bubble {
+            background: #f0f5ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        .fraud-tip {
+            background: #fff7e6;
+            border-left: 4px solid var(--warning-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #b7630c;
+        }
+
+        /* 选择项 */
+        .choices {
+            margin: 24px 0;
+        }
+
+        .choice-button {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: var(--text-dark);
+        }
+
+        .choice-button:hover {
+            border-color: var(--primary-color);
+            background: #f0f5ff;
+        }
+
+        .choice-button.correct::after {
+            content: " ✓";
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        /* 结局 */
+        .ending-scene {
+            text-align: center;
+            padding: 40px 20px;
+            border-radius: 12px;
+        }
+
+        .ending-scene.good {
+            background: #c6f6d5;
+        }
+
+        .ending-scene.bad {
+            background: #fed7d7;
+        }
+
+        .ending-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .ending-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .ending-message {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .knowledge-reward {
+            background: rgba(255,255,255,0.7);
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .ending-button {
+            padding: 12px 32px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .ending-button:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        /* ========== AI模拟器样式 ========== */
+        .simulator-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .scenario-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .scenario-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .scenario-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .scenario-description {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .scenario-difficulty {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #f0f5ff;
+            color: var(--primary-color);
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* 对话框 */
+        .chat-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+            margin-bottom: 20px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 16px;
+            padding-right: 8px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .message.assistant .message-avatar {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .message.user .message-avatar {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .message-text {
+            max-width: 70%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message.assistant .message-text {
+            background: #f0f5ff;
+            color: var(--text-dark);
+        }
+
+        .message.user .message-text {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .message-analysis {
+            font-size: 12px;
+            color: var(--warning-color);
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .chat-button {
+            padding: 12px 24px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .chat-button:hover {
+            opacity: 0.9;
+        }
+
+        .chat-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ========== 安全地图样式 ========== */
+        .map-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .map-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .map-section {
+            flex: 1;
+        }
+
+        .map-display {
+            width: 100%;
+            height: 400px;
+            background: #f0f5ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 16px;
+            border: 2px solid var(--border-color);
+        }
+
+        .hotspots-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .hotspot-item {
+            background: #f5f7fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--border-color);
+        }
+
+        .hotspot-item:hover {
+            background: #f0f5ff;
+            border-left-color: var(--primary-color);
+            transform: translateX(4px);
+        }
+
+        .hotspot-item.high-risk {
+            border-left-color: var(--danger-color);
+        }
+
+        .hotspot-item.medium-risk {
+            border-left-color: var(--warning-color);
+        }
+
+        .hotspot-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-dark);
+        }
+
+        .hotspot-info {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .hotspot-methods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .method-tag {
+            background: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            border: 1px solid var(--border-color);
+        }
+
+        .hotspot-detail {
+            background: #f5f7fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .hotspot-detail-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .detail-item {
+            margin-bottom: 16px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .detail-content {
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .safety-tips {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .tip-card {
+            background: linear-gradient(135deg, #f5f7fa, #eef2f7);
+            border-radius: 8px;
+            padding: 16px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .tip-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .tip-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .tip-content {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* ========== 导航和按钮 ========== */
+        .nav-bar {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .back-button {
+            padding: 8px 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            opacity: 0.8;
+        }
+
+        /* ========== 响应式设计 ========== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .map-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .story-container {
+                padding: 20px;
+            }
+
+            .message-text {
+                max-width: 85%;
+            }
+
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .statistics {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ========== 加载动画 ========== */
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ========== 工具类 ========== */
+        .hidden {
+            display: none !important;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="nav-content">
+            <div class="logo" onclick="goHome()">幻境：港岛迷局</div>
+            <button class="back-button hidden" id="backBtn" onclick="goHome()">← 返回首页</button>
+        </div>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- ========== 首页 ========== -->
+        <div id="homePage" class="page active home-page">
+            <div class="header">
+                <h1>🎮 幻境：港岛迷局</h1>
+                <p>一款沉浸式反诈教育游戏 | 帮助你识别诈骗陷阱</p>
+            </div>
+
+            <div class="user-card">
+                <div class="user-avatar">👤</div>
+                <div class="user-info">
+                    <h2 id="userName">港岛新生</h2>
+                    <p id="userLevel">等级 1</p>
+                </div>
+            </div>
+
+            <div class="statistics">
+                <div class="stat-item">
+                    <div class="stat-label">防诈知识值</div>
+                    <div class="stat-value" id="fraudKnowledge">0</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="knowledgeBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">完成故事</div>
+                    <div class="stat-value" id="storiesCompleted">0/10</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">游戏时间</div>
+                    <div class="stat-value" id="gameTime">0分钟</div>
+                </div>
+            </div>
+
+            <div class="notifications">
+                <div class="section-title">🔔 最新诈骗预警</div>
+                <div class="notification-item">
+                    <div class="notification-title">新诈骗预警：冒充港警</div>
+                    <div class="notification-content">最近接到多起冒充"香港警务处"的诈骗电话，称受害人涉及洗钱案件</div>
+                    <div class="notification-time">2小时前</div>
+                </div>
+                <div class="notification-item">
+                    <div class="notification-title">学生提醒：虚假奖学金</div>
+                    <div class="notification-content">近期有学生被冒充学校名义的诈骗者要求支付手续费</div>
+                    <div class="notification-time">昨天</div>
+                </div>
+            </div>
+
+            <div class="notifications mb-20">
+                <div class="section-title">🎮 选择游戏模式</div>
+            </div>
+
+            <div class="menu-grid">
+                <div class="menu-card story" onclick="startStoryMode()">
+                    <div class="menu-icon">📖</div>
+                    <div class="menu-title">蜜语下的暗流</div>
+                    <div class="menu-subtitle">单人剧情模式</div>
+                    <div class="menu-description">进入沉浸式剧情，识别诈骗陷阱，通过故事学习防诈知识</div>
+                </div>
+
+                <div class="menu-card werewolf" onclick="startWerewolfMode()">
+                    <div class="menu-icon">🎭</div>
+                    <div class="menu-title">诈术狼人杀</div>
+                    <div class="menu-subtitle">多人对抗模式</div>
+                    <div class="menu-description">与真实玩家对抗，学习诈骗心理学和识人技巧</div>
+                </div>
+
+                <div class="menu-card simulator" onclick="startAISimulator()">
+                    <div class="menu-icon">🤖</div>
+                    <div class="menu-title">AI虚拟对话</div>
+                    <div class="menu-subtitle">日常训练模式</div>
+                    <div class="menu-description">与AI进行高仿真对话训练，实时分析诈骗话术</div>
+                </div>
+
+                <div class="menu-card map" onclick="startSafetyMap()">
+                    <div class="menu-icon">🗺️</div>
+                    <div class="menu-title">校园安全地图</div>
+                    <div class="menu-subtitle">实时预警系统</div>
+                    <div class="menu-description">查看诈骗高发区域和防范建议，获取安全提示</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 故事模式 ========== -->
+        <div id="storyPage" class="page">
+            <div class="story-container">
+                <div class="story-header">
+                    <h2 class="story-title" id="storyTitle">故事加载中...</h2>
+                    <span class="story-difficulty" id="storyDifficulty">简单</span>
+                </div>
+
+                <div id="storyContent">
+                    <!-- 动态内容 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== AI模拟器 ========== -->
+        <div id="simulatorPage" class="page">
+            <div class="simulator-container">
+                <h2 class="section-title">选择诈骗场景进行对话训练</h2>
+
+                <div id="scenarioSelector" class="scenario-selector">
+                    <!-- 动态生成 -->
+                </div>
+
+                <div id="chatArea" class="hidden">
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chatMessages"></div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input 
+                            type="text" 
+                            class="chat-input" 
+                            id="messageInput" 
+                            placeholder="输入你的回应..."
+                            onkeypress="handleMessageKeyPress(event)"
+                        >
+                        <button class="chat-button" onclick="sendMessage()">发送</button>
+                    </div>
+                    <button class="back-button mt-20" onclick="goHome()">← 返回首页</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 安全地图 ========== -->
+        <div id="mapPage" class="page">
+            <div class="map-container">
+                <h2 class="section-title">🗺️ 校园安全地图</h2>
+
+                <div class="map-grid">
+                    <div class="map-section">
+                        <div class="map-display">📍 地图</div>
+                        <div class="hotspots-list" id="hotspotslist">
+                            <!-- 动态生成 -->
+                        </div>
+                    </div>
+
+                    <div class="map-section">
+                        <div id="hotspotDetail" class="hidden hotspot-detail">
+                            <div class="hotspot-detail-title" id="detailName">诈骗热点</div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">风险等级</div>
+                                <div class="detail-content" id="detailRisk">高</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">近期案件数</div>
+                                <div class="detail-content" id="detailCases">0起</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">常见诈骗手法</div>
+                                <div class="detail-content">
+                                    <div class="hotspot-methods" id="detailMethods"></div>
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">防范建议</div>
+                                <div class="detail-content" id="detailTips">请选择一个热点了解更多</div>
+                            </div>
+                        </div>
+
+                        <div id="defaultTips" class="hidden"></div>
+                    </div>
+                </div>
+
+                <div class="safety-tips">
+                    <h3 class="section-title">💡 安全防范提示</h3>
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <div class="tip-icon">✓</div>
+                            <div class="tip-title">确认官方渠道</div>
+                            <div class="tip-content">任何要求个人信息的请求，都应通过官方渠道确认真伪</div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-icon">✗</div>
+                            <div class="tip-title">不要预付款</div>
+                            <div class="tip-content">正规服务或机构不会要求预付款项，这是典型诈骗手段</div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-icon">🔒</div>
+                            <div class="tip-title">保护隐私信息</div>
+                            <div class="tip-content">永远不要分享密码、验证码或银行卡详情给陌生人</div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-icon">☎️</div>
+                            <div class="tip-title">核实陌生来电</div>
+                            <div class="tip-content">接到自称执法部门的电话，挂断后致电官方号码确认</div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-icon">❤️</div>
+                            <div class="tip-title">警惕网络恋情</div>
+                            <div class="tip-content">网络陌生人快速示好并邀请投资，99%是"杀猪盘"诈骗</div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-icon">⏰</div>
+                            <div class="tip-title">莫信紧急情况</div>
+                            <div class="tip-content">制造紧迫感（账户冻结、名额有限）是常见诈骗手段</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="back-button mt-20" onclick="goHome()">← 返回首页</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 数据管理 ==========
+        const gameData = {
+            playerName: localStorage.getItem('playerName') || '港岛新生',
+            level: parseInt(localStorage.getItem('level') || '1'),
+            fraudKnowledge: parseInt(localStorage.getItem('fraudKnowledge') || '0'),
+            storiesCompleted: parseInt(localStorage.getItem('storiesCompleted') || '0'),
+            gameTime: parseInt(localStorage.getItem('gameTime') || '0')
+        }
+
+        // 故事数据
+        const stories = [
+            {
+                id: 1,
+                title: '奖学金陷阱',
+                difficulty: '简单',
+                description: '一个看似来自校方的好消息...',
+                scenes: [
+                    {
+                        id: 1,
+                        type: 'intro',
+                        text: '你是一名初来香港的大学新生，正在宿舍整理东西。突然收到一条微信消息。',
+                        choices: [
+                            { text: '点击查看消息', nextScene: 2 }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        type: 'dialog',
+                        character: '李老师',
+                        message: '你好呀！我是你们学院的李老师。学校最近有一个面向成绩优异的同学的奖学金项目。看你的申请表不错，我想单独和你聊一下...',
+                        choices: [
+                            { 
+                                text: '礼貌地询问奖学金项目细节',
+                                nextScene: 3,
+                                fraudScore: 0,
+                                correct: true
+                            },
+                            { 
+                                text: '直接同意转账',
+                                nextScene: 4,
+                                fraudScore: 5,
+                                correct: false
+                            },
+                            { 
+                                text: '询问为什么不通过学校正式渠道',
+                                nextScene: 5,
+                                fraudScore: 0,
+                                correct: true
+                            }
+                        ],
+                        fraudTips: '正规奖学金申请应通过学校官方渠道，不会通过个人微信进行'
+                    },
+                    {
+                        id: 3,
+                        type: 'dialog',
+                        character: '李老师',
+                        message: '我们现在需要审查你的资金背景。为了验证你的经济独立性，需要你先转账10,000港币作为保证金。这笔钱最后会返还到你的账户。',
+                        choices: [
+                            { 
+                                text: '拒绝，并向学院官方咨询',
+                                nextScene: 6,
+                                fraudScore: 0,
+                                correct: true
+                            },
+                            { 
+                                text: '同意转账',
+                                nextScene: 7,
+                                fraudScore: 10,
+                                correct: false
+                            }
+                        ],
+                        fraudTips: '真实的奖学金不需要预先支付费用。这是典型的"黑名单费用诈骗"'
+                    },
+                    {
+                        id: 5,
+                        type: 'dialog',
+                        character: '李老师',
+                        message: '嗯...因为这个项目还在评审阶段，所以还不能公开。不过你是个聪明人，应该理解吧？',
+                        choices: [
+                            { 
+                                text: '继续询问官方确认',
+                                nextScene: 6,
+                                fraudScore: 0,
+                                correct: true
+                            },
+                            { 
+                                text: '相信他的解释',
+                                nextScene: 7,
+                                fraudScore: 8,
+                                correct: false
+                            }
+                        ],
+                        fraudTips: '真实项目不会隐瞒，反而会提供官方确认渠道'
+                    },
+                    {
+                        id: 6,
+                        type: 'ending',
+                        title: '好结局 ✨',
+                        message: '你的谨慎救了你！通过学院官方确认，这是一场诈骗。该骗子已被举报。你获得了"警惕者"成就！',
+                        endingType: 'good',
+                        fraudKnowledge: 20,
+                        tips: '重点：永远通过官方渠道确认重要信息，正规机构会提供确认方式。'
+                    },
+                    {
+                        id: 7,
+                        type: 'ending',
+                        title: '坏结局 ⚠️',
+                        message: '你转账后，对方立即删除好友消失了。你被诈骗了！这是典型的预付款诈骗。记住：正规机构不会要求预付款。',
+                        endingType: 'bad',
+                        fraudKnowledge: 5,
+                        tips: '重点：任何要求预付款的都要警惕。正规奖学金不需要手续费。'
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: '冒充警察',
+                difficulty: '中等',
+                description: '接到自称港警的电话...',
+                scenes: [
+                    {
+                        id: 1,
+                        type: 'intro',
+                        text: '你正在图书馆复习，手机突然响起。来电显示：香港警務處',
+                        choices: [
+                            { text: '接听电话', nextScene: 2 }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        type: 'dialog',
+                        character: '"警官"',
+                        message: '你好，这是香港警务处刑事部门。我们发现你的账户被用于洗钱活动。为了保护你的资金，需要立即冻结你的账户。请提供你的银行卡号。',
+                        choices: [
+                            { 
+                                text: '挂断电话，拨打官方警察号码确认',
+                                nextScene: 3,
+                                correct: true
+                            },
+                            { 
+                                text: '相信他，提供银行卡号',
+                                nextScene: 4,
+                                correct: false
+                            },
+                            { 
+                                text: '询问案件号',
+                                nextScene: 5,
+                                correct: true
+                            }
+                        ],
+                        fraudTips: '真实警察不会通过电话要求银行信息。应该挂断后主动拨打官方号码确认。'
+                    },
+                    {
+                        id: 3,
+                        type: 'ending',
+                        title: '好结局 ✨',
+                        message: '你拨打警务处确认，发现这是诈骗电话。警方表示他们不会通过电话要求个人信息。你的警惕心拯救了你！',
+                        endingType: 'good',
+                        fraudKnowledge: 25,
+                        tips: '重点：接到可疑电话时，永远不要提供个人信息。挂断后主动拨打官方号码确认。'
+                    },
+                    {
+                        id: 4,
+                        type: 'ending',
+                        title: '坏结局 ⚠️',
+                        message: '诈骗分子随后转走了你账户中的大部分资金。这是常见的"假冒警察"诈骗。',
+                        endingType: 'bad',
+                        fraudKnowledge: 5,
+                        tips: '重点：警察不会通过电话要求转账或提供银行信息。永远主动拨打官方号码确认。'
+                    }
+                ]
+            }
+        ]
+
+        // 诈骗场景数据
+        const fraudScenarios = [
+            {
+                id: 'police',
+                name: '冒充警察',
+                description: '假扮警察称你涉及洗钱案',
+                difficulty: '中等',
+                initialMessage: '你好，这是香港警务处。我们发现你的账户被用于洗钱，需要提供银行卡号进行核实。'
+            },
+            {
+                id: 'bank',
+                name: '冒充银行',
+                description: '假冒银行客服称账户异常',
+                difficulty: '简单',
+                initialMessage: '您好，这是HSBC银行。我们检测到您的账户有异常交易。请立即提供你的账户密码进行验证。'
+            },
+            {
+                id: 'scholarship',
+                name: '奖学金诈骗',
+                description: '谎称有奖学金机会',
+                difficulty: '简单',
+                initialMessage: '恭喜你被选中获得50,000港币的奖学金！为了确保名额，请先支付1,500港币的注册费。'
+            },
+            {
+                id: 'love',
+                name: '杀猪盘诈骗',
+                description: '虚假恋爱关系诱导投资',
+                difficulty: '困难',
+                initialMessage: '嗨，我注意到你很久了。我是来香港旅游的投资顾问。我发现了一个赚钱的机会，想和你一起投资...'
+            }
+        ]
+
+        // 香港热点数据
+        const hotspots = [
+            {
+                id: 1,
+                name: '中环',
+                risk: '高',
+                cases: 15,
+                methods: ['假冒警察', '金融诈骗', '投资诈骗'],
+                tips: '中环作为金融中心，诈骗分子常冒充银行或投资公司'
+            },
+            {
+                id: 2,
+                name: '铜锣湾',
+                risk: '中',
+                cases: 8,
+                methods: ['购物诈骗', '虚假招聘'],
+                tips: '购物区域常见二手交易诈骗和虚假工作机会'
+            },
+            {
+                id: 3,
+                name: '旺角',
+                risk: '高',
+                cases: 12,
+                methods: ['快递诈骗', '二手交易'],
+                tips: '人流密集，常见快递索赔和虚假二手买卖'
+            },
+            {
+                id: 4,
+                name: '大学校园',
+                risk: '高',
+                cases: 20,
+                methods: ['假冒校方', '奖学金诈骗', '杀猪盘'],
+                tips: '学生群体是重点目标，需特别警惕'
+            }
+        ]
+
+        // ========== 页面导航 ==========
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active')
+            })
+            document.getElementById(pageId).classList.add('active')
+            
+            const backBtn = document.getElementById('backBtn')
+            if (pageId === 'homePage') {
+                backBtn.classList.add('hidden')
+            } else {
+                backBtn.classList.remove('hidden')
+            }
+        }
+
+        function goHome() {
+            showPage('homePage')
+            updateUserStats()
+        }
+
+        // ========== 用户数据更新 ==========
+        function updateUserStats() {
+            document.getElementById('userName').textContent = gameData.playerName
+            document.getElementById('userLevel').textContent = `等级 ${gameData.level}`
+            document.getElementById('fraudKnowledge').textContent = gameData.fraudKnowledge
+            document.getElementById('knowledgeBar').style.width = Math.min(gameData.fraudKnowledge / 100 * 100, 100) + '%'
+            document.getElementById('storiesCompleted').textContent = `${gameData.storiesCompleted}/10`
+            document.getElementById('gameTime').textContent = gameData.gameTime + '分钟'
+        }
+
+        function addFraudKnowledge(points) {
+            gameData.fraudKnowledge += points
+            gameData.level = Math.floor(gameData.fraudKnowledge / 50) + 1
+            localStorage.setItem('fraudKnowledge', gameData.fraudKnowledge)
+            localStorage.setItem('level', gameData.level)
+            updateUserStats()
+        }
+
+        // ========== 故事模式 ==========
+        let currentStory = 0
+        let currentScene = 0
+
+        function startStoryMode() {
+            currentStory = Math.floor(Math.random() * stories.length)
+            currentScene = 0
+            loadStory()
+            showPage('storyPage')
+        }
+
+        function loadStory() {
+            const story = stories[currentStory]
+            document.getElementById('storyTitle').textContent = story.title
+            document.getElementById('storyDifficulty').textContent = story.difficulty
+            renderScene()
+        }
+
+        function renderScene() {
+            const story = stories[currentStory]
+            const scene = story.scenes[currentScene]
+            const content = document.getElementById('storyContent')
+            
+            let html = ''
+
+            if (scene.type === 'intro') {
+                html = `
+                    <div class="scene scene-intro">
+                        <div class="scene-text">${scene.text}</div>
+                        <div style="font-size: 64px; margin: 20px 0;">📱</div>
+                    </div>
+                    <div class="choices">
+                        ${scene.choices.map((choice, idx) => `
+                            <button class="choice-button" onclick="nextStoryScene(${choice.nextScene})">
+                                ${choice.text}
+                            </button>
+                        `).join('')}
+                    </div>
+                `
+            } else if (scene.type === 'dialog') {
+                html = `
+                    <div class="scene">
+                        <div class="character-info">
+                            <div class="character-avatar">👤</div>
+                            <div class="character-name">${scene.character}</div>
+                        </div>
+                        <div class="message-bubble">${scene.message}</div>
+                        ${scene.fraudTips ? `<div class="fraud-tip">${scene.fraudTips}</div>` : ''}
+                    </div>
+                    <div class="choices">
+                        ${scene.choices.map((choice, idx) => `
+                            <button class="choice-button ${choice.correct ? 'correct' : ''}" 
+                                    onclick="handleStoryChoice(${choice.nextScene}, ${choice.fraudScore || 0}, ${choice.correct})">
+                                ${choice.text}
+                            </button>
+                        `).join('')}
+                    </div>
+                `
+            } else if (scene.type === 'ending') {
+                html = `
+                    <div class="ending-scene ${scene.endingType}">
+                        <div class="ending-icon">${scene.endingType === 'good' ? '✨ 恭喜！' : '⚠️ 失败'}</div>
+                        <div class="ending-title">${scene.title}</div>
+                        <div class="ending-message">${scene.message}</div>
+                        <div class="knowledge-reward">+${scene.fraudKnowledge} 防诈知识值</div>
+                        <div class="detail-content" style="background: #f5f7fa; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                            <strong>💡 学到的要点：</strong><br>${scene.tips}
+                        </div>
+                        <button class="ending-button" onclick="goHome()">返回首页</button>
+                    </div>
+                `
+                addFraudKnowledge(scene.fraudKnowledge)
+                gameData.storiesCompleted = Math.min(gameData.storiesCompleted + 1, 10)
+                localStorage.setItem('storiesCompleted', gameData.storiesCompleted)
+            }
+
+            content.innerHTML = html
+        }
+
+        function nextStoryScene(sceneId) {
+            const story = stories[currentStory]
+            currentScene = story.scenes.findIndex(s => s.id === sceneId)
+            renderScene()
+        }
+
+        function handleStoryChoice(sceneId, fraudScore, isCorrect) {
+            if (isCorrect) {
+                addFraudKnowledge(10)
+            }
+            nextStoryScene(sceneId)
+        }
+
+        // ========== AI模拟器 ==========
+        let currentScenario = null
+        let conversationHistory = []
+
+        function startAISimulator() {
+            showPage('simulatorPage')
+            renderScenarioSelector()
+        }
+
+        function renderScenarioSelector() {
+            const selector = document.getElementById('scenarioSelector')
+            const chatArea = document.getElementById('chatArea')
+            
+            chatArea.classList.add('hidden')
+            selector.innerHTML = fraudScenarios.map(scenario => `
+                <div class="scenario-card" onclick="selectScenario('${scenario.id}')">
+                    <div class="scenario-name">${scenario.name}</div>
+                    <div class="scenario-description">${scenario.description}</div>
+                    <div class="scenario-difficulty">难度：${scenario.difficulty}</div>
+                </div>
+            `).join('')
+        }
+
+        function selectScenario(scenarioId) {
+            currentScenario = fraudScenarios.find(s => s.id === scenarioId)
+            conversationHistory = [
+                {
+                    role: 'assistant',
+                    content: currentScenario.initialMessage,
+                    timestamp: new Date()
+                }
+            ]
+
+            document.getElementById('scenarioSelector').classList.add('hidden')
+            document.getElementById('chatArea').classList.remove('hidden')
+            renderChat()
+        }
+
+        function renderChat() {
+            const chatMessages = document.getElementById('chatMessages')
+            chatMessages.innerHTML = conversationHistory.map(msg => `
+                <div class="message ${msg.role}">
+                    <div class="message-avatar">${msg.role === 'assistant' ? '🎭' : '👤'}</div>
+                    <div class="message-text">
+                        ${msg.content}
+                        ${msg.analysis ? `<div class="message-analysis">${msg.analysis}</div>` : ''}
+                    </div>
+                </div>
+            `).join('')
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput')
+            const message = input.value.trim()
+            
+            if (!message) return
+
+            conversationHistory.push({
+                role: 'user',
+                content: message,
+                timestamp: new Date()
+            })
+
+            // 模拟AI回应
+            setTimeout(() => {
+                const responses = {
+                    'police': [
+                        '我理解你的疑虑，但我们正在进行调查。请提供你的完整身份信息。',
+                        '这很紧急，你的账户随时可能被冻结。我需要你的银行卡号。',
+                        '不要挂电话，这涉及到你的法律责任。'
+                    ],
+                    'bank': [
+                        '为了安全起见，请确认你的账户密码。',
+                        '我们检测到了可疑交易。请登录我们提供的链接进行验证。',
+                        '这需要立即处理，否则你的账户会被锁定。'
+                    ],
+                    'scholarship': [
+                        '是的，这是真实的机会。很多学生都参加了。',
+                        '这个名额只能保留到今天。你需要尽快转账。',
+                        '转账后我们会立即审批你的奖学金申请。'
+                    ],
+                    'love': [
+                        '我相信我们会有美好的未来。如果你投资我的项目，我们会一起变得富有。',
+                        '其他人都赚了很多钱。为什么你不相信我呢？',
+                        '如果你爱我，就应该愿意为我们的未来投资。'
+                    ]
+                }
+
+                const scenarioResponses = responses[currentScenario.id] || responses['police']
+                const response = scenarioResponses[Math.floor(Math.random() * scenarioResponses.length)]
+
+                // 分析用户消息
+                let analysis = null
+                const content = message.toLowerCase()
+                if (content.includes('卡') || content.includes('密码') || content.includes('账户')) {
+                    analysis = '⚠️ 警惕！不要提供敏感信息'
+                } else if (content.includes('转账') || content.includes('付钱')) {
+                    analysis = '🚨 危险！这是诈骗的关键步骤'
+                } else if (content.includes('确认') || content.includes('验证')) {
+                    analysis = '✓ 好的！你在尝试确认信息'
+                }
+
+                conversationHistory.push({
+                    role: 'assistant',
+                    content: response,
+                    analysis: analysis,
+                    timestamp: new Date()
+                })
+
+                renderChat()
+                document.getElementById('messageInput').value = ''
+            }, 500)
+        }
+
+        function handleMessageKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage()
+            }
+        }
+
+        // ========== 安全地图 ==========
+        function startSafetyMap() {
+            showPage('mapPage')
+            renderHotspots()
+        }
+
+        function renderHotspots() {
+            const list = document.getElementById('hotspotslist')
+            list.innerHTML = hotspots.map(hotspot => `
+                <div class="hotspot-item ${hotspot.risk === '高' ? 'high-risk' : 'medium-risk'}"
+                     onclick="selectHotspot(${hotspot.id})">
+                    <div class="hotspot-name">${hotspot.name}</div>
+                    <div class="hotspot-info">
+                        <span>风险等级: ${hotspot.risk}</span>
+                        <span>案件数: ${hotspot.cases}起</span>
+                    </div>
+                    <div class="hotspot-methods">
+                        ${hotspot.methods.map(m => `<div class="method-tag">${m}</div>`).join('')}
+                    </div>
+                </div>
+            `).join('')
+        }
+
+        function selectHotspot(hotspotId) {
+            const hotspot = hotspots.find(h => h.id === hotspotId)
+            const detail = document.getElementById('hotspotDetail')
+            
+            document.getElementById('detailName').textContent = hotspot.name
+            document.getElementById('detailRisk').textContent = hotspot.risk
+            document.getElementById('detailCases').textContent = `${hotspot.cases}起`
+            document.getElementById('detailMethods').innerHTML = hotspot.methods
+                .map(m => `<div class="method-tag">${m}</div>`).join('')
+            document.getElementById('detailTips').textContent = hotspot.tips
+
+            detail.classList.remove('hidden')
+        }
+
+        // ========== 初始化 ==========
+        window.onload = () => {
+            updateUserStats()
+        }
+    </script>
+</body>
+</html>
+
